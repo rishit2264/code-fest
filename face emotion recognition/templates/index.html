@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Emotion Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333;
+            margin-top: 20px;
+        }
+
+        img {
+            border: 2px solid #333;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        #emotionResult, #suggestionResult {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #555;
+        }
+
+        #emotionResult {
+            font-weight: bold;
+            color: #007BFF;
+        }
+
+        #suggestionResult {
+            font-style: italic;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <h1>Real-Time Emotion Detection</h1>
+    <img src="{{ url_for('video_feed') }}" width="640" height="480" alt="Webcam Feed">
+    <div id="emotionResult">Emotion: Unknown</div>
+    <div id="suggestionResult">Suggestion: No suggestion available.</div>
+
+    <script>
+        // Function to fetch emotion and suggestion from the backend
+        function updateEmotion() {
+            fetch('/get_emotion')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('emotionResult').innerText = "Emotion: " + data.emotion;
+                    document.getElementById('suggestionResult').innerText = "Suggestion: " + data.suggestion;
+                })
+                .catch(error => {
+                    console.error("Error fetching emotion data:", error);
+                });
+
+            // Update every second
+            setTimeout(updateEmotion, 1000);
+        }
+
+        // Start updating emotion when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            updateEmotion();
+        });
+    </script>
+</body>
+</html>
